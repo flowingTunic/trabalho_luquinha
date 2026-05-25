@@ -7,7 +7,7 @@ class GerenciadorPedidos:
     Classe utilitaria para faturamento e gestao de pedidos de clientes.
     """
 
- 
+    # Parametros de faturamento (Constantes)
     REDUCAO_VIP = 0.85
     REDUCAO_PREMIUM = 0.90
     VALE_10 = 0.90
@@ -23,28 +23,24 @@ class GerenciadorPedidos:
         """Determina o valor do frete conforme a regiao e montante."""
         if total_compra > self.MINIMO_FRETE_GRATIS:
             return 0
-        
         tarifas = {'SP': 15, 'RJ': 20, 'MG': 18}
         return tarifas.get(localidade, 30)
 
     def _computar_descontos(self, base, categoria, ticket):
         """Aplica deducoes baseadas no perfil do cliente e cupons ativos."""
         final = base
-        
-
         if categoria == 'vip':
             final *= self.REDUCAO_VIP
         elif categoria == 'premium':
             final *= self.REDUCAO_PREMIUM
 
-       
         if ticket == 'DESC10':
             final *= self.VALE_10
         elif ticket == 'DESC20':
             final *= self.VALE_20
-            
         return final
 
+    # pylint: disable=too-many-arguments, too-many-positional-arguments
     def processar_pedido(self, cliente_nome, cliente_email, cliente_tipo,
                          itens, cupom, regiao, forma_pagamento):
         """
@@ -52,7 +48,6 @@ class GerenciadorPedidos:
         """
         bruto = self.obter_total_itens(itens)
         com_desconto = self._computar_descontos(bruto, cliente_tipo, cupom)
-        
         frete_calculado = self._validar_custo_entrega(regiao, com_desconto)
         montante_final = com_desconto + frete_calculado
 
